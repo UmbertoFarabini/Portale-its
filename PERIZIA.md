@@ -114,3 +114,7 @@ Data: 27/07/2026
 - **Conseguenza**: il progetto mantiene un segreto inutilizzato, aumentando il rischio di configurazione obsoleta e di gestione errata dei segreti.
 - **Rimedio**: eliminare il parametro non usato e conservare i segreti solo dove effettivamente servono.
 
+## Piano di intervento
+Oggi chiudiamo: S1, S2, S3, A1, A3, O1, E1   perche ...
+Rimandiamo:     S4, A2, O2, O3, E2 ,E3, C1, C2, C3   perche ...
+
