@@ -115,6 +115,7 @@ Data: 27/07/2026
 - **Rimedio**: eliminare il parametro non usato e conservare i segreti solo dove effettivamente servono.
 
 ## Piano di intervento
-Oggi chiudiamo: S1, S2, S3, A1, A3, O1, E1   perche ...
-Rimandiamo:     S4, A2, O2, O3, E2 ,E3, C1, C2, C3   perche ...
+Oggi chiudiamo: S1, S2, S3, A1, A3, O1, E1 perché sono i problemi più critici, direttamente legati a sicurezza, accesso pubblico, esposizione di segreti e assenza di rollback operativo; sono anche quelli che, se corretti rapidamente, riducono il rischio immediato di perdita di dati, manipolazione del sito o esposizione di informazioni sensibili.
+
+Rimandiamo: S4, A2, O2, O3, E2, E3, C1, C2, C3 perché sono rilevanti ma meno urgenti o più legati a messa in ordine, governance, automazione e miglioramento continuo; richiedono lavoro di infrastruttura, processi o organizzazione che può essere pianificato in una seconda fase senza compromettere la copertura immediata dei rischi principali.
 
