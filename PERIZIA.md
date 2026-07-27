@@ -27,11 +27,14 @@ Data: 27/07/2026
 - **Conseguenza**: Le password sono visibili a tutti
 - **Rimedio**: rimuovere, considerarle compromesse e cambiarle, montare un controllo sui segreti
 
-### S3 - Gli accessi pubblici al bucket non sono bloccati 
+### S4 - Nessuna cifratura a riposo
 - **Gravita**: SERIO
 - **Fatto**: Nessuna cifratura a riposo: ne sul bucket ne sulla tabella delle iscrizioni, che contiene dati di persone
 - **Conseguenza**: I dati sensibili (bucket S3 e tabella iscrizioni) restano leggibili in chiaro
 - **Rimedio**: 	cifratura sul bucket, chiave gestita da noi sulla tabella
+
+## Affidabilità
+
 ## A1 - Il bucket non ha il versioning
 - **Gravità**: BLOCCANTE
 - **Fatto**: il bucket non ha il versioning attivato e la pagina pubblicata non ha una versione precedente conservata.
@@ -50,7 +53,7 @@ Data: 27/07/2026
 - **Conseguenza**: in caso di problema, il ritorno a una release precedente non è operativo e dipende da un passaggio manuale non formalizzato.
 - **Rimedio**: definire una procedura di rollback automatizzata, con versione precedente conservata e ripubblicazione guidata dalla pipeline.
 
-##OPERABILITA
+## Operabilità
 
 ## O1 - La pubblicazione è manuale e dipende da una persona e da un portatile
 - **Gravità**: BLOCCANTE
@@ -71,7 +74,7 @@ Data: 27/07/2026
 - **Rimedio**: introdurre un controllo automatico dopo il deploy, con validazione della disponibilità e della correttezza del sito.
 
 
-## Evolvibilità e costi
+## Evolvibilità
 
 ## E1 - Non esistono test automatizzati
 - **Gravità**: BLOCCANTE
@@ -91,6 +94,8 @@ Data: 27/07/2026
 - **Conseguenza**: non esiste un luogo in cui provare le modifiche prima di distribuire in produzione, aumentando il rischio di errori.
 - **Rimedio**: introdurre un parametro Env e derivare i nomi delle risorse da esso, creando un ambiente dedicato per le prove.
 
+## Costi
+
 ## C1 - Dipendenza non utilizzata e potenziale superficie di attacco
 - **Gravità**: SERIO
 - **Fatto**: è presente una dipendenza dichiarata ma mai usata, come left-pad, che aumenta la superficie di attacco del progetto.
@@ -109,18 +114,3 @@ Data: 27/07/2026
 - **Conseguenza**: il progetto mantiene un segreto inutilizzato, aumentando il rischio di configurazione obsoleta e di gestione errata dei segreti.
 - **Rimedio**: eliminare il parametro non usato e conservare i segreti solo dove effettivamente servono.
 
-## Conclusione
-
-Il conto è chiaro: quindici difetti, e nessuno li vedeva.
-
-- **Constatazioni**: 15
-- **Su cinque lenti**: sicurezza, affidabilità, operabilità, evolvibilità e costi
-- **Bloccanti**: 6, da chiudere oggi
-- **Segreti nel repo**: 3, in tre file diversi
-- **Test esistenti**: 0, su un bug in produzione
-
-Ci sono anche tre difetti che non stanno nel codice, ma valgono quanto gli altri: il runbook che insegna a rimettere il bucket pubblico, la conoscenza in testa a una persona sola, e l’abitudine di pubblicare il venerdì pomeriggio quando non c’è nessuno a rimediare.
-
-E adesso il numero che conta: quando accenderete i controlli automatici sul codice così com’è, diventerà rosso in dieci punti diversi — e ci metterà quaranta secondi.
-
-Voi ci avete messo cinquanta minuti a trovarne quindici, e va benissimo: la perizia serve a capire quali problemi contano e in che ordine. La macchina non lo sa fare. Ma una volta che gliel’avete insegnato, li ritrova tutti, ogni volta, per sempre. E questo è il patto: voi decidete, lei ricorda.
