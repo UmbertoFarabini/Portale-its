@@ -1,4 +1,5 @@
 Impostazioni portale (NON cancellare)
+ciao ciao
 
 FTP_HOST=ftp.portale-its.example
 FTP_USER=segreteria
