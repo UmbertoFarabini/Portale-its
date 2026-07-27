@@ -10,7 +10,7 @@ SCHEMI='AKIA[0-9A-Z]{16}'                       # chiave di accesso AWS
 SCHEMI="$SCHEMI|ghp_[A-Za-z0-9]{36}"            # token personale GitHub
 SCHEMI="$SCHEMI|-----BEGIN [A-Z ]*PRIVATE KEY"  # chiave privata
 SCHEMI="$SCHEMI|AWS_SECRET_ACCESS_KEY[[:space:]]*[:=][[:space:]]*[A-Za-z0-9/+]{40}"
-SCHEMI="$SCHEMI|(password|passwd|api[_-]?token)[[:space:]]*[:=][[:space:]]*.{8,}"
+SCHEMI="$SCHEMI|(password|passwd|pass|api[_-]?token|secret)[[:space:]_]*[:=][[:space:]]*.{8,}"
 
 TROVATI=$(grep -rInE "$SCHEMI" "$CARTELLA" \
   --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.terraform \
