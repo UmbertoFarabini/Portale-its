@@ -1,4 +1,4 @@
-// Generatore statico del Portale ITS. Zero dipendenze: solo Node.
+// Generatore statico del Portale ITS. Zero dipendenze: solo Node. ciao
 import { readFileSync, writeFileSync, mkdirSync, cpSync, existsSync } from "node:fs";
 
 const OUT = "dist";
