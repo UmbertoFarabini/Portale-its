@@ -69,3 +69,58 @@ Data: 27/07/2026
 - **Fatto**: la verifica post-pubblicazione è effettuata «a occhio», senza un controllo automatico.
 - **Conseguenza**: errori di pubblicazione o problemi di contenuto possono passare inosservati fino a quando non vengono rilevati manualmente.
 - **Rimedio**: introdurre un controllo automatico dopo il deploy, con validazione della disponibilità e della correttezza del sito.
+
+
+## Evolvibilità e costi
+
+## E1 - Non esistono test automatizzati
+- **Gravità**: BLOCCANTE
+- **Fatto**: il documento contiene un errore di calcolo nelle ore totali, con un valore riportato di 260 ore mentre la somma della colonna restituisce 320 ore, e non esistono test che ne garantiscano la correttezza.
+- **Conseguenza**: il contenuto è fragile, soggetto a errori di calcolo e non verificabile automaticamente.
+- **Rimedio**: correggere il calcolo e introdurre test automatizzati che verificano il totale e la coerenza dei dati.
+
+## E2 - Non esiste un lockfile delle dipendenze
+- **Gravità**: SERIO
+- **Fatto**: le dipendenze non sono bloccate da un lockfile, quindi due build o installazioni successive possono risolvere versioni diverse.
+- **Conseguenza**: il comportamento della build può cambiare nel tempo, rendendo meno ripetibile e più difficile da auditare.
+- **Rimedio**: generare e committare il lockfile, ad esempio con npm ci e il file package-lock.json.
+
+## E3 - Un solo ambiente e nessun parametro per l'ambiente
+- **Gravità**: SERIO
+- **Fatto**: i nomi delle risorse sono scritti a mano e non esiste un parametro per l'ambiente, quindi non è possibile avere un ambiente di test o di staging separato.
+- **Conseguenza**: non esiste un luogo in cui provare le modifiche prima di distribuire in produzione, aumentando il rischio di errori.
+- **Rimedio**: introdurre un parametro Env e derivare i nomi delle risorse da esso, creando un ambiente dedicato per le prove.
+
+## C1 - Dipendenza non utilizzata e potenziale superficie di attacco
+- **Gravità**: SERIO
+- **Fatto**: è presente una dipendenza dichiarata ma mai usata, come left-pad, che aumenta la superficie di attacco del progetto.
+- **Conseguenza**: dipendenze inutilizzate espongono il progetto a rischi inutili e complicano la manutenzione.
+- **Rimedio**: rimuovere la dipendenza non utilizzata e mantenere solo le librerie realmente necessarie.
+
+## C2 - Nessuna risorsa ha tag di governance
+- **Gravità**: SERIO
+- **Fatto**: nessuna risorsa del portale è taggata con Owner, Env o Progetto, rendendo impossibile distinguere responsabilità e ambiente di appartenenza.
+- **Conseguenza**: non è possibile capire chi è responsabile delle risorse, né stimare in modo affidabile il costo del portale o l'ambito di impatto delle modifiche.
+- **Rimedio**: aggiungere i tag Owner, Env e Progetto a tutte le risorse e introdurre un controllo che li richieda in modo automatico.
+
+## C3 - Parametro del token gestionale non usato
+- **Gravità**: SERIO
+- **Fatto**: il parametro dedicato al token del gestionale non viene usato da nessuna risorsa, ma resta comunque presente come segreto esposto.
+- **Conseguenza**: il progetto mantiene un segreto inutilizzato, aumentando il rischio di configurazione obsoleta e di gestione errata dei segreti.
+- **Rimedio**: eliminare il parametro non usato e conservare i segreti solo dove effettivamente servono.
+
+## Conclusione
+
+Il conto è chiaro: quindici difetti, e nessuno li vedeva.
+
+- **Constatazioni**: 15
+- **Su cinque lenti**: sicurezza, affidabilità, operabilità, evolvibilità e costi
+- **Bloccanti**: 6, da chiudere oggi
+- **Segreti nel repo**: 3, in tre file diversi
+- **Test esistenti**: 0, su un bug in produzione
+
+Ci sono anche tre difetti che non stanno nel codice, ma valgono quanto gli altri: il runbook che insegna a rimettere il bucket pubblico, la conoscenza in testa a una persona sola, e l’abitudine di pubblicare il venerdì pomeriggio quando non c’è nessuno a rimediare.
+
+E adesso il numero che conta: quando accenderete i controlli automatici sul codice così com’è, diventerà rosso in dieci punti diversi — e ci metterà quaranta secondi.
+
+Voi ci avete messo cinquanta minuti a trovarne quindici, e va benissimo: la perizia serve a capire quali problemi contano e in che ordine. La macchina non lo sa fare. Ma una volta che gliel’avete insegnato, li ritrova tutti, ogni volta, per sempre. E questo è il patto: voi decidete, lei ricorda.
