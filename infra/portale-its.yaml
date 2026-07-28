@@ -129,6 +129,39 @@ Resources:
         - Key: Progetto
           Value: portale-its
 
+  # ---------- area di scambio per il fornitore ----------
+  # Bucket separato dal sito: il fornitore non tocca mai portale-its-sito.
+  ScambioBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'portale-its-scambio-${Env}-${AWS::AccountId}'
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LoggingConfiguration:
+        DestinationBucketName: !Ref LogBucket
+        LogFilePrefix: !Sub 'scambio/${Env}/'
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+        - Key: Env
+          Value: !Ref Env
+        - Key: Progetto
+          Value: portale-its
+
+  # Gruppo, utente e policy del fornitore vivono in infra/portale-its-iam.yaml:
+  # moto non gestisce in modo affidabile Group+User+Policy creati nello
+  # stesso stack (vedi commento nella pipeline), quindi questa parte non
+  # viene deployata/collaudata su moto insieme al resto.
+
 Outputs:
   SiteBucketName:
     Description: Bucket che ospita il portale
@@ -139,3 +172,6 @@ Outputs:
   IscrizioniTableName:
     Description: Tabella delle iscrizioni
     Value: !Ref IscrizioniTable
+  ScambioBucketName:
+    Description: Bucket di scambio per il fornitore
+    Value: !Ref ScambioBucket
