@@ -97,12 +97,26 @@ jobs:
           echo "--- bucket ---"
           BUCKETS=$(aws --endpoint-url "$ENDPOINT" s3api list-buckets --query 'Buckets[].Name' --output text)
           echo "$BUCKETS"
-          echo "$BUCKETS" | grep -q "portale-its-sito" || { echo "::error::bucket del sito mancante"; exit 1; }
-          echo "$BUCKETS" | grep -q "portale-its-log"  || { echo "::error::bucket dei log mancante"; exit 1; }
+          echo "$BUCKETS" | grep -q "portale-its-sito"    || { echo "::error::bucket del sito mancante"; exit 1; }
+          echo "$BUCKETS" | grep -q "portale-its-log"     || { echo "::error::bucket dei log mancante"; exit 1; }
+          echo "$BUCKETS" | grep -q "portale-its-scambio" || { echo "::error::bucket di scambio mancante"; exit 1; }
           echo "--- tabelle ---"
           TABELLE=$(aws --endpoint-url "$ENDPOINT" dynamodb list-tables --output text)
           echo "$TABELLE"
           echo "$TABELLE" | grep -q "iscrizioni" || { echo "::error::tabella iscrizioni mancante"; exit 1; }
+
+      - name: Collaudo - il sito non è pubblico
+        run: |
+          SITO=$(aws --endpoint-url "$ENDPOINT" s3api list-buckets \
+            --query "Buckets[?starts_with(Name,'portale-its-sito')].Name | [0]" --output text)
+          BLOCCO=$(aws --endpoint-url "$ENDPOINT" s3api get-public-access-block \
+            --bucket "$SITO" --query 'PublicAccessBlockConfiguration' --output json)
+          echo "$BLOCCO"
+          echo "$BLOCCO" | grep -q '"BlockPublicAcls": true'   || { echo "::error::sito non protetto (BlockPublicAcls)"; exit 1; }
+          echo "$BLOCCO" | grep -q '"BlockPublicPolicy": true' || { echo "::error::sito non protetto (BlockPublicPolicy)"; exit 1; }
+          echo "$BLOCCO" | grep -q '"IgnorePublicAcls": true'  || { echo "::error::sito non protetto (IgnorePublicAcls)"; exit 1; }
+          echo "$BLOCCO" | grep -q '"RestrictPublicBuckets": true' || { echo "::error::sito non protetto (RestrictPublicBuckets)"; exit 1; }
+          echo "### Sito non raggiungibile dall'esterno: confermato" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Collaudo - il sito si pubblica sul bucket
         run: |
