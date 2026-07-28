@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Portale corsi ITS ICT Piemonte - identita del fornitore per l'area di
+  scambio. Separato da portale-its.yaml perche' moto non gestisce in modo
+  affidabile Group+User+Policy creati nello stesso stack: qui non viene
+  eseguito nel collaudo automatico su moto, solo validato staticamente.
+
+Parameters:
+  Env:
+    Type: String
+    Description: Ambiente di destinazione
+    AllowedValues: [dev, test, prod]
+    Default: test
+  Owner:
+    Type: String
+    Description: Squadra responsabile della risorsa (governance ITS)
+    Default: squadra-0
+    MinLength: 3
+
+Resources:
+  # Gruppo dedicato: la policy si attacca al gruppo, non all'utente
+  # direttamente (riduce la complessita di gestione).
+  FornitoreGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: !Sub 'portale-its-fornitori-scambio-${Env}'
+
+  # Identita dedicata al fornitore. Nessuna access key qui dentro:
+  # le credenziali si generano fuori dal template e si consegnano a parte.
+  FornitoreUser:
+    Type: AWS::IAM::User
+    DependsOn: FornitoreGroup
+    Properties:
+      UserName: !Sub 'portale-its-fornitore-iscrizioni-${Env}'
+      Groups:
+        - !Ref FornitoreGroup
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+        - Key: Env
+          Value: !Ref Env
+        - Key: Progetto
+          Value: portale-its
+
+  FornitorePolicy:
+    Type: AWS::IAM::Policy
+    DependsOn: FornitoreGroup
+    Properties:
+      PolicyName: ScriviSoloNellaPropriaCartella
+      Groups:
+        - !Ref FornitoreGroup
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # Solo scrittura (PutObject), solo dentro un prefisso dedicato.
+          # Niente GetObject/ListBucket: il fornitore non puo leggere ne
+          # elencare il contenuto del bucket, solo depositare file.
+          # ARN ricalcolato con la stessa convenzione di portale-its.yaml,
+          # per non dipendere da un riferimento cross-stack.
+          - Sid: ConsentiScritturaSoloNelPrefissoFornitore
+            Effect: Allow
+            Action: 's3:PutObject'
+            Resource: !Sub 'arn:aws:s3:::portale-its-scambio-${Env}-${AWS::AccountId}/fornitore-iscrizioni/*'
+
+Outputs:
+  FornitoreUserName:
+    Description: Utente IAM del fornitore, scrittura solo su fornitore-iscrizioni/*
+    Value: !Ref FornitoreUser
+  FornitoreGroupName:
+    Description: Gruppo IAM del fornitore
+    Value: !Ref FornitoreGroup
