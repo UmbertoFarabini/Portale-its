@@ -90,6 +90,7 @@ jobs:
             --template-file infra/portale-its.yaml \
             --stack-name portale-its-test \
             --parameter-overrides Env=test Owner=squadra \
+            --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset
 
       - name: Collaudo - le risorse esistono davvero?
