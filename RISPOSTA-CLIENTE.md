@@ -34,4 +34,4 @@ fuori da questo canale.
 Tempo di implementazione: gia incluso nel lavoro odierno.
 
 ## CR-3 - Rimettere i permessi pubblici
-(in lavorazione)
+RIFIUTATA. I blocchi messi per mettere in sicurezza i dati non ci permettono di rendere il bucket pubblico
