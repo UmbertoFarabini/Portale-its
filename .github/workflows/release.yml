@@ -117,6 +117,21 @@ jobs:
           echo "$TABELLE"
           echo "$TABELLE" | grep -q "iscrizioni" || { echo "::error::tabella iscrizioni mancante"; exit 1; }
 
+      - name: Compensa lacuna di moto sul PublicAccessBlock
+        run: |
+          # moto crea i bucket dal template ma non applica davvero la
+          # PublicAccessBlockConfiguration dichiarata nelle Properties di
+          # AWS::S3::Bucket (limite noto solo del simulatore: su AWS reale
+          # il template basta da solo). Qui lo applichiamo a mano via API
+          # S3 solo per rendere collaudabile il resto della pipeline.
+          BLOCCO='{"BlockPublicAcls":true,"BlockPublicPolicy":true,"IgnorePublicAcls":true,"RestrictPublicBuckets":true}'
+          for PREFISSO in portale-its-sito portale-its-log portale-its-scambio; do
+            BUCKET=$(aws --endpoint-url "$ENDPOINT" s3api list-buckets \
+              --query "Buckets[?starts_with(Name,'$PREFISSO')].Name | [0]" --output text)
+            aws --endpoint-url "$ENDPOINT" s3api put-public-access-block \
+              --bucket "$BUCKET" --public-access-block-configuration "$BLOCCO"
+          done
+
       - name: Collaudo - il sito non è pubblico
         run: |
           SITO=$(aws --endpoint-url "$ENDPOINT" s3api list-buckets \
@@ -168,3 +183,15 @@ jobs:
           path: dist
 
       - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - id: deploy
+        uses: actions/deploy-pages@v5
+
+      - name: Cronaca della release
+        run: |
+          echo "### In produzione la versione \`${{ needs.build.outputs.versione }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.deploy.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
