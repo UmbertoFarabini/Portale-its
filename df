@@ -1,0 +1,38 @@
+[33maf305f7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge branch 'test-01'
+[33mf7c58cd[m[33m ([m[1;31morigin/test-01[m[33m, [m[1;32mtest-01[m[33m)[m aggiunti fornitori
+[33mad5aaba[m aggiunti fornitori
+[33m1c9f436[m aggiunti fornitori
+[33mfdca286[m aggiunti fornitori
+[33mde9e05f[m aggiunti fornitori
+[33mbc4a987[m Merge branch 'test-01'
+[33m42f8322[m aggiustato cloudformation
+[33m2e0e23f[m Merge pull request #3 from UmbertoFarabini/test-01
+[33m3870fa1[m CR-2: bucket di scambio per il fornitore + riscontro
+[33mdbc4689[m CR-1: aggiunge Sicurezza Applicativa e Analisi dei Dati
+[33m0bc7c6e[m aggiunge pipeline di release
+[33m4bfd5ea[m bugs removed on build.mjs
+[33mdf1a703[m created portale.test.mjs as requested on the file
+[33ma4d6da1[m updated package json
+[33m1e5de00[m test
+[33m87d94c2[m test
+[33m8c18742[m added package-lock.json
+[33m63db494[m remodified sniffa segreti
+[33m3381fe6[m "script/sniffa-segreti.sh ....seems to be working"
+[33m5a55665[m aggiunta applicazione principale
+[33m51a717d[m creata cartella infra
+[33m3c6c367[m added Gates
+[33m9268938[m added sniffa-segreti.sh
+[33m0e88d44[m aggiunto terraform
+[33m5fa6ed4[m cloud formation yaml complete
+[33mafc8b9e[m finished piano di intervento
+[33m26878b0[m aggiunto piano di intervento
+[33mf572f91[m aggiustato PERIZIA
+[33m51e1efc[m added  3rd and 4 th riscontro
+[33m3edc96f[m tolto piano
+[33m1991bed[m uniti i file
+[33mc536ad3[m uniti i file
+[33m7d3f42f[m trying
+[33m9f0d243[m Merge branch 'main' of https://github.com/UmbertoFarabini/Portale-its
+[33m131a673[m added new changes
+[33m8c3f478[m aggiunto perizia Sicurezza
+[33m10448d8[m inizio proggetto
