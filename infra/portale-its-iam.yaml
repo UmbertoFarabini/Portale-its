@@ -29,7 +29,6 @@ Resources:
   # le credenziali si generano fuori dal template e si consegnano a parte.
   FornitoreUser:
     Type: AWS::IAM::User
-    DependsOn: FornitoreGroup
     Properties:
       UserName: !Sub 'portale-its-fornitore-iscrizioni-${Env}'
       Groups:
@@ -44,7 +43,6 @@ Resources:
 
   FornitorePolicy:
     Type: AWS::IAM::Policy
-    DependsOn: FornitoreGroup
     Properties:
       PolicyName: ScriviSoloNellaPropriaCartella
       Groups:

@@ -95,12 +95,14 @@ jobs:
       - name: Convalida statica del template IAM del fornitore
         run: |
           # Group+User+Policy creati nello stesso stack non sono affidabili
-          # su moto (bug noto), quindi qui non lo depieghiamo/eseguiamo:
-          # ci limitiamo a una convalida sintattica/di schema del template,
-          # che non richiede l'esecuzione di un changeset.
-          aws --endpoint-url "$ENDPOINT" cloudformation validate-template \
-            --template-body file://infra/portale-its-iam.yaml
-          echo "### Template IAM del fornitore: sintassi valida" >> "$GITHUB_STEP_SUMMARY"
+          # su moto (bug noto in esecuzione), e anche la sua validate-template
+          # va oltre il semplice controllo sintattico di AWS reale e inciampa
+          # sullo stesso genere di bug (dipendenza Ref+DependsOn scambiata per
+          # "risorsa inesistente"). Percio' qui non tocchiamo moto per niente:
+          # usiamo cfn-lint, che valida il template offline.
+          pip install --quiet cfn-lint
+          cfn-lint infra/portale-its-iam.yaml
+          echo "### Template IAM del fornitore: sintassi valida (cfn-lint)" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Collaudo - le risorse esistono davvero?
         run: |
@@ -166,15 +168,3 @@ jobs:
           path: dist
 
       - uses: actions/configure-pages@v5
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-      - id: deploy
-        uses: actions/deploy-pages@v5
-
-      - name: Cronaca della release
-        run: |
-          echo "### In produzione la versione \`${{ needs.build.outputs.versione }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "${{ steps.deploy.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
